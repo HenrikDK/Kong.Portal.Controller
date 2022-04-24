@@ -1,4 +1,5 @@
 using Kong.Portal.Controller.Model;
+using Kong.Portal.Controller.Model.Repositories;
 
 namespace Kong.Portal.Controller.Test.IntegrationTests;
 
@@ -40,33 +41,13 @@ public class ApiPodRepositoryTests
         _container = new Container(registry);
     }
 
-/*        [Test]
-        public void Should_save_service_deployment()
-        {
-            var getDeploymentCount = _container.GetInstance<IGetDeploymentCount>();
+    [Test]
+    public void Should_save_service_deployment()
+    {
+        var repository = _container.GetInstance<IApiPodRepository>();
 
-            var count =getDeploymentCount.Execute();
+        var pods = repository.GetAll();
 
-            count.Should().BeGreaterThan(0);
-        }
-        
-        [Test]
-        public void Should_get_active_services()
-        {
-            var getActiveServices = _container.GetInstance<IGetActiveServices>();
-
-            var services = getActiveServices.Execute();
-
-            services.Count.Should().BeGreaterThan(0);
-        }
-        
-        [Test]
-        public void Should_get_configuration()
-        {
-            var getConfiguration = _container.GetInstance<IGetConfiguration>();
-
-            var configuration = getConfiguration.Execute();
-
-            configuration.Should().NotBeNull();
-        }*/
+        pods.Count.Should().BeGreaterThan(0);
+    }
 }
