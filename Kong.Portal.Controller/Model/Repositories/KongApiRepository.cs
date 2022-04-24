@@ -7,27 +7,35 @@ public interface IKongApiRepository
     
 public class KongApiRepository : IKongApiRepository
 {
-    private Lazy<KubernetesClientConfiguration> _configuration;
+    private Lazy<KubernetesClientConfiguration> _config;
 
     public KongApiRepository()
     {
-        _configuration = new Lazy<KubernetesClientConfiguration>(() => KubernetesClientConfiguration.IsInCluster()
+        _config = new Lazy<KubernetesClientConfiguration>(() => KubernetesClientConfiguration.IsInCluster()
             ? KubernetesClientConfiguration.InClusterConfig()
             : KubernetesClientConfiguration.BuildDefaultConfig());
     }
     
-    public bool FileExists(string path)
-    {
-        return File.Exists(path);
-    }
-
-    public string GetFileContents(string path)
-    {
-        return File.ReadAllText(path);
-    }
-
     public IList<KongApi> GetAll()
     {
-        throw new NotImplementedException();
+        var host = _config.Value.Host;
+
+        var pods = host.AppendPathSegment("/apis/henrik.dk/v1/kong-apis")
+            .WithOAuthBearerToken(_config.Value.AccessToken)
+            .GetJsonAsync().Result;
+
+        var apis = new List<KongApi>();
+        foreach (var api in pods.items)
+        {
+            apis.Add(new KongApi
+            {
+                Name = api.metadata.name,
+                NameSpace = (string)((IDictionary<string, object>)api.metadata)["namespace"],
+                Port = (int) api.spec.port,
+                Swagger = api.spec.swagger
+            });
+        }
+
+        return apis;
     }
 }
