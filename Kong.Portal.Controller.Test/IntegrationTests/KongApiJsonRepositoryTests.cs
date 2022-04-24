@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Kong.Portal.Controller.Model;
 using Kong.Portal.Controller.Model.Repositories;
 
@@ -15,8 +17,7 @@ public class KongApiJsonRepositoryTests
             ? KubernetesClientConfiguration.InClusterConfig()
             : KubernetesClientConfiguration.BuildDefaultConfig();
 
-        FlurlHttp.ConfigureClient(config.Host,
-            cli => cli.Settings.HttpClientFactory = new UntrustedHttpsClientFactory());
+        FlurlHttp.ConfigureClient(config.Host, cli => cli.Settings.HttpClientFactory = new UntrustedHttpsClientFactory());
         FlurlHttp.Configure(c =>
         {
             c.JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
@@ -41,13 +42,49 @@ public class KongApiJsonRepositoryTests
         _container = new Container(registry);
     }
 
-    [Test]
-    public void Should_save_service_deployment()
+    //[Test]
+    public void Should_get_all_kong_api_jsons_in_namespace()
     {
         var repository = _container.GetInstance<IKongApiJsonRepository>();
 
-        var apis = repository.GetAll();
+        var jsons = repository.GetAll("petstore");
 
-        apis.Count.Should().BeGreaterThan(0);
+        jsons.Count.Should().BeGreaterThan(0);
+    }
+    
+    //[Test]
+    public void Should_delete_specific_kong_api_json()
+    {
+        var repository = _container.GetInstance<IKongApiJsonRepository>();
+        var json = new KongApiJson
+        {
+            Name = "petstore-user-api",
+            NameSpace = "petstore"
+        };
+        
+        repository.Delete(json);
+        
+        var jsons = repository.GetAll("petstore");
+        jsons.FirstOrDefault(x => x.Name == json.Name).Should().BeNull();
+    }
+    
+    //[Test]
+    public void Should_create_specific_kong_api_json()
+    {
+        var repository = _container.GetInstance<IKongApiJsonRepository>();
+        var json = new KongApiJson
+        {
+            Name = "petstore-store-api",
+            NameSpace = "petstore",
+            Json = "test test",
+            Updated = DateTime.Now,
+            MergedCount = 123
+        };
+        repository.Delete(json);
+        
+        repository.Insert(json);
+        
+        var jsons = repository.GetAll("petstore");
+        jsons.FirstOrDefault(x => x.Name == json.Name).Should().NotBeNull();
     }
 }
