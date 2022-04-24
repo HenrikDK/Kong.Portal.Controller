@@ -1,0 +1,17 @@
+apiVersion: "henrik.dk/v1"
+kind: KongApi
+metadata:
+  name: petstore-pet-api
+  namespace: petstore
+spec:
+  port: 8080
+  swagger: /swagger.json
+---
+apiVersion: "henrik.dk/v1"
+kind: KongApiJson
+metadata:
+  name: petstore-pet-api
+  namespace: petstore
+spec:
+  json: "wak wak"
+  updated: "2020-01-21T21:01:02Z"
