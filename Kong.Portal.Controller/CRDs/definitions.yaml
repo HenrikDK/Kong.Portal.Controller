@@ -63,7 +63,7 @@ spec:
                   type: string
                 updated:
                   type: string
-                merged-count:
+                mergedCount:
                   type: integer
   # either Namespaced or Cluster
   scope: Namespaced
