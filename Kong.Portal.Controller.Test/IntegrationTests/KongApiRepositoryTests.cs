@@ -42,7 +42,7 @@ public class KongApiRepositoryTests
     }
 
     [Test]
-    public void Should_save_service_deployment()
+    public void Should_get_kong_apis_from_cluster()
     {
         var repository = _container.GetInstance<IKongApiRepository>();
 
