@@ -41,7 +41,7 @@ public class ApiPodRepositoryTests
         _container = new Container(registry);
     }
 
-    [Test]
+    //[Test]
     public void Should_save_service_deployment()
     {
         var repository = _container.GetInstance<IApiPodRepository>();
