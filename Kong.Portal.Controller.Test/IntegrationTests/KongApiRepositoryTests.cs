@@ -41,7 +41,7 @@ public class KongApiRepositoryTests
         _container = new Container(registry);
     }
 
-    [Test]
+    //[Test]
     public void Should_get_kong_apis_from_cluster()
     {
         var repository = _container.GetInstance<IKongApiRepository>();
