@@ -18,7 +18,6 @@ global using Flurl.Http.Configuration;
 global using k8s;
 global using Lamar;
 global using Lamar.Microsoft.DependencyInjection;
-global using MoreLinq.Extensions;
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Serialization;
 global using Prometheus;
