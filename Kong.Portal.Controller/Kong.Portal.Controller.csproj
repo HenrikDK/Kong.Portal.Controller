@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Flurl" Version="3.0.4" />
+    <PackageReference Include="Flurl.Http" Version="3.2.2" />
     <PackageReference Include="KubernetesClient" Version="7.2.15" />
     <PackageReference Include="Lamar" Version="8.0.1" />
     <PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="8.0.1" />
