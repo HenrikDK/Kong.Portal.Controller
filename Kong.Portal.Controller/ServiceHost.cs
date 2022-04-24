@@ -4,16 +4,16 @@ namespace Kong.Portal.Controller;
 
 public class ServiceHost : IHostedService
 {
-    private readonly IMigrationScheduler _migrationScheduler;
+    private readonly IReconciliationScheduler _reconciliationScheduler;
     private readonly ILogger<ServiceHost> _logger;
     private TimeSpan _delay = TimeSpan.FromMinutes(1);
     private List<Task> _tasks = new List<Task>();
     private KestrelMetricServer _server = new KestrelMetricServer(1402);
 
-    public ServiceHost(IMigrationScheduler migrationScheduler,
+    public ServiceHost(IReconciliationScheduler reconciliationScheduler,
         ILogger<ServiceHost> logger)
     {
-        _migrationScheduler = migrationScheduler;
+        _reconciliationScheduler = reconciliationScheduler;
         _logger = logger;
 
         _server.Start();
@@ -21,7 +21,7 @@ public class ServiceHost : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        var scheduler = Task.Run(() => _migrationScheduler.ExecuteWithDelay(cancellationToken, _delay)).ContinueWith(HandleTaskCancellation);
+        var scheduler = Task.Run(() => _reconciliationScheduler.RunOnInterval(cancellationToken, _delay)).ContinueWith(HandleTaskCancellation);
         _tasks.Add(scheduler);
 
         return Task.CompletedTask;
