@@ -42,7 +42,7 @@ public class ApiPodRepositoryTests
     }
 
     //[Test]
-    public void Should_save_service_deployment()
+    public void Should_get_api_pods_from_cluster()
     {
         var repository = _container.GetInstance<IApiPodRepository>();
 
