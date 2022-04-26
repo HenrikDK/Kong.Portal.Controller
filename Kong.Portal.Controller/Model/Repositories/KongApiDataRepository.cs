@@ -1,77 +1,75 @@
 namespace Kong.Portal.Controller.Model.Repositories;
 
-public interface IKongApiJsonRepository
+public interface IKongApiDataRepository
 {
-    IList<KongApiJson> GetAll(string nameSpace);
-    void Delete(KongApiJson json);
-    void Insert(KongApiJson json);
+    IList<KongApiData> GetAll(string nameSpace);
+    void Delete(KongApiData data);
+    void Insert(KongApiData data);
 }
 
-public class KongApiJsonRepository : IKongApiJsonRepository
+public class KongApiDataRepository : IKongApiDataRepository
 {
     private Lazy<KubernetesClientConfiguration> _config;
 
-    public KongApiJsonRepository()
+    public KongApiDataRepository()
     {
         _config = new Lazy<KubernetesClientConfiguration>(() => KubernetesClientConfiguration.IsInCluster()
             ? KubernetesClientConfiguration.InClusterConfig()
             : KubernetesClientConfiguration.BuildDefaultConfig());
     }
     
-    public IList<KongApiJson> GetAll(string nameSpace)
+    public IList<KongApiData> GetAll(string nameSpace)
     {
         var host = _config.Value.Host;
 
-        var apis = host.AppendPathSegment($"/apis/henrik.dk/v1/namespaces/{nameSpace}/kong-api-jsons")
+        var apis = host.AppendPathSegment($"/apis/henrik.dk/v1/namespaces/{nameSpace}/kong-api-data")
             .WithOAuthBearerToken(_config.Value.AccessToken)
             .GetJsonAsync().Result;
 
-        var result = new List<KongApiJson>();
+        var result = new List<KongApiData>();
         foreach (var api in apis.items)
         {
-            result.Add(new KongApiJson
+            result.Add(new KongApiData
             {
                 Name = api.metadata.name,
                 NameSpace = (string)((IDictionary<string, object>)api.metadata)["namespace"],
-                Json = api.spec.json,
+                Data = api.spec.json,
                 Updated = api.spec.updated,
-                MergedCount = (int)api.spec.mergedCount
             });
         }
 
         return result;
     }
 
-    public void Delete(KongApiJson json)
+    public void Delete(KongApiData data)
     {
         var host = _config.Value.Host;
 
-        var result = host.AppendPathSegment($"/apis/henrik.dk/v1/namespaces/{json.NameSpace}/kong-api-jsons/{json.Name}")
+        var result = host.AppendPathSegment($"/apis/henrik.dk/v1/namespaces/{data.NameSpace}/kong-api-data/{data.Name}")
             .AllowHttpStatus("4xx")
             .WithOAuthBearerToken(_config.Value.AccessToken)
             .DeleteAsync().Result;
     }
 
-    public void Insert(KongApiJson json)
+    public void Insert(KongApiData data)
     {
         var host = _config.Value.Host;
 
-        var result = host.AppendPathSegment($"/apis/henrik.dk/v1/namespaces/{json.NameSpace}/kong-api-jsons")
+        var result = host.AppendPathSegment($"/apis/henrik.dk/v1/namespaces/{data.NameSpace}/kong-api-data")
             .WithOAuthBearerToken(_config.Value.AccessToken)
             .PostJsonAsync(new
             {
                 apiVersion = "henrik.dk/v1",
-                kind = "KongApiJson",
+                kind = "KongApiData",
                 metadata = new
                 {
-                    name = json.Name,
-                    Namespace = json.NameSpace
+                    name = data.Name,
+                    Namespace = data.NameSpace
                 },
                 spec = new
                 {
-                    json.Json,
-                    json.Updated,
-                    json.MergedCount
+                    data.Data,
+                    data.Updated,
                 }
             }).Result;
     }
