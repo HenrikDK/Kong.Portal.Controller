@@ -5,7 +5,7 @@ using Kong.Portal.Controller.Model.Repositories;
 
 namespace Kong.Portal.Controller.Test.IntegrationTests;
 
-public class KongApiJsonRepositoryTests
+public class KongApiDataRepositoryTests
 {
     private Container _container;
     private IConfiguration _configuration;
@@ -34,7 +34,7 @@ public class KongApiJsonRepositoryTests
         var registry = new ServiceRegistry();
         registry.Scan(x =>
         {
-            x.AssemblyContainingType<KongApiJson>();
+            x.AssemblyContainingType<KongApiData>();
             x.WithDefaultConventions();
             x.LookForRegistries();
         });
@@ -45,7 +45,7 @@ public class KongApiJsonRepositoryTests
     //[Test]
     public void Should_get_all_kong_api_jsons_in_namespace()
     {
-        var repository = _container.GetInstance<IKongApiJsonRepository>();
+        var repository = _container.GetInstance<IKongApiDataRepository>();
 
         var jsons = repository.GetAll("petstore");
 
@@ -55,8 +55,8 @@ public class KongApiJsonRepositoryTests
     //[Test]
     public void Should_delete_specific_kong_api_json()
     {
-        var repository = _container.GetInstance<IKongApiJsonRepository>();
-        var json = new KongApiJson
+        var repository = _container.GetInstance<IKongApiDataRepository>();
+        var json = new KongApiData
         {
             Name = "petstore-user-api",
             NameSpace = "petstore"
@@ -71,14 +71,13 @@ public class KongApiJsonRepositoryTests
     //[Test]
     public void Should_create_specific_kong_api_json()
     {
-        var repository = _container.GetInstance<IKongApiJsonRepository>();
-        var json = new KongApiJson
+        var repository = _container.GetInstance<IKongApiDataRepository>();
+        var json = new KongApiData
         {
             Name = "petstore-store-api",
             NameSpace = "petstore",
-            Json = "test test",
+            Data = "test test",
             Updated = DateTime.Now,
-            MergedCount = 123
         };
         repository.Delete(json);
         
