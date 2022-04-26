@@ -20,7 +20,7 @@ public class KongRepository : IKongRepository
         var host = _config.GetValue<string>("kong-admin-url");
         var token = _config.GetValue<string>("kong-token");
 
-        var result = host.AppendPathSegment($"/k8s-{name}-{nameSpace}.json")
+        var result = host.AppendPathSegment($"/default/files/specs/k8s-{nameSpace}-{name}.json")
             .WithHeader("Kong-Admin-Token", token)
             .PostJsonAsync(new {data}).Result;
     }
@@ -30,8 +30,9 @@ public class KongRepository : IKongRepository
         var host = _config.GetValue<string>("kong-admin-url");
         var token = _config.GetValue<string>("kong-token");
 
-        var result = host.AppendPathSegment($"/k8s-{name}-{nameSpace}.json")
+        var result = host.AppendPathSegment($"/default/files/specs/k8s-{nameSpace}-{name}.json")
             .WithHeader("Kong-Admin-Token", token)
+            .AllowHttpStatus("4xx")
             .DeleteAsync().Result;
     }
 }
