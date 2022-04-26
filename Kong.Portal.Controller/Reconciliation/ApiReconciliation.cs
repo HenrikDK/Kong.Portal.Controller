@@ -1,4 +1,4 @@
-namespace Kong.Portal.Controller.Setup;
+namespace Kong.Portal.Controller.Reconciliation;
 
 public interface IApiReconciliation
 {
