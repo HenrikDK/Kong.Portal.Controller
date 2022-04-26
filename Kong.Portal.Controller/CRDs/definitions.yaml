@@ -1,17 +1,12 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  # name must match the spec fields below, and be in the form: <plural>.<group>
   name: kong-apis.henrik.dk
 spec:
-  # group name to use for REST API: /apis/<group>/<version>
   group: henrik.dk
-  # list of versions supported by this CustomResourceDefinition
   versions:
     - name: v1
-      # Each version can be enabled/disabled by Served flag.
       served: true
-      # One and only one version must be marked as the storage version.
       storage: true
       schema:
         openAPIV3Schema:
@@ -24,33 +19,23 @@ spec:
                   type: integer
                 swagger:
                   type: string
-  # either Namespaced or Cluster
   scope: Namespaced
   names:
-    # plural name to be used in the URL: /apis/<group>/<version>/<plural>
     plural: kong-apis
-    # singular name to be used as an alias on the CLI and for display
     singular: kong-api
-    # kind is normally the CamelCased singular type. Your resource manifests use this.
     kind: KongApi
-    # shortNames allow shorter string to match your resource on the CLI
     shortNames:
       - ka
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  # name must match the spec fields below, and be in the form: <plural>.<group>
-  name: kong-api-jsons.henrik.dk
+  name: kong-api-data.henrik.dk
 spec:
-  # group name to use for REST API: /apis/<group>/<version>
   group: henrik.dk
-  # list of versions supported by this CustomResourceDefinition
   versions:
     - name: v1
-      # Each version can be enabled/disabled by Served flag.
       served: true
-      # One and only one version must be marked as the storage version.
       storage: true
       schema:
         openAPIV3Schema:
@@ -59,21 +44,53 @@ spec:
             spec:
               type: object
               properties:
-                json:
+                data:
                   type: string
                 updated:
                   type: string
-                mergedCount:
-                  type: integer
-  # either Namespaced or Cluster
   scope: Namespaced
   names:
-    # plural name to be used in the URL: /apis/<group>/<version>/<plural>
-    plural: kong-api-jsons
-    # singular name to be used as an alias on the CLI and for display
-    singular: kong-api-json
-    # kind is normally the CamelCased singular type. Your resource manifests use this.
-    kind: KongApiJson
-    # shortNames allow shorter string to match your resource on the CLI
+    plural: kong-api-data
+    kind: KongApiData
     shortNames:
       - kaj
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: kong-api-configs.henrik.dk
+spec:
+  group: henrik.dk
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                termsUrl:
+                  type: string
+                contactEmail:
+                  type: string
+                licenseName:
+                  type: string
+                licenseUrl:
+                  type: string
+                securityScheme:
+                  type: string
+                securityKeyName:
+                  type: string
+  scope: Namespaced
+  names:
+    plural: kong-api-configs
+    kind: KongApiConfig
+    shortNames:
+      - kac
