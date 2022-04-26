@@ -1,3 +1,5 @@
+using Kong.Portal.Controller.Reconciliation.Cleanup;
+
 namespace Kong.Portal.Controller.Reconciliation;
 
 public interface IReconciliationScheduler
@@ -8,11 +10,13 @@ public interface IReconciliationScheduler
 public class ReconciliationScheduler : IReconciliationScheduler
 {
     private readonly IApiReconciliation _apiReconciliation;
+    private readonly ICleanupClusterApis _cleanupClusterApis;
     private TimeSpan _delay = TimeSpan.FromMinutes(1);
     
-    public ReconciliationScheduler(IApiReconciliation apiReconciliation)
+    public ReconciliationScheduler(IApiReconciliation apiReconciliation, ICleanupClusterApis cleanupClusterApis)
     {
         _apiReconciliation = apiReconciliation;
+        _cleanupClusterApis = cleanupClusterApis;
     }
     
     public void RunOnInterval(CancellationToken token, TimeSpan delay)
@@ -24,6 +28,8 @@ public class ReconciliationScheduler : IReconciliationScheduler
             stopWatch.Start();
             
             _apiReconciliation.ProcessClusterApis();
+            
+            _cleanupClusterApis.CleanupApiData();
 
             WaitForNextExecution(token, stopWatch);
         }
