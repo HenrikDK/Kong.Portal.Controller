@@ -6,7 +6,7 @@ public class ServiceHost : IHostedService
 {
     private readonly IReconciliationScheduler _reconciliationScheduler;
     private readonly ILogger<ServiceHost> _logger;
-    private TimeSpan _delay = TimeSpan.FromMinutes(1);
+    private TimeSpan _delay = TimeSpan.FromMinutes(2);
     private List<Task> _tasks = new List<Task>();
     private KestrelMetricServer _server = new KestrelMetricServer(1402);
 
