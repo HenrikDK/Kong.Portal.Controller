@@ -2,7 +2,7 @@ namespace Kong.Portal.Controller.Model.Repositories;
 
 public interface IApiPodRepository
 {
-    IList<ApiPod> GetAll();
+    IList<ApiPod> GetAll(string nameSpace);
 }
     
 public class ApiPodRepository : IApiPodRepository
@@ -16,11 +16,11 @@ public class ApiPodRepository : IApiPodRepository
             : KubernetesClientConfiguration.BuildDefaultConfig());
     }
 
-    public IList<ApiPod> GetAll()
+    public IList<ApiPod> GetAll(string nameSpace)
     {
         var host = _config.Value.Host;
 
-        var pods = host.AppendPathSegment("/api/v1/pods")
+        var pods = host.AppendPathSegment($"/api/v1/namespaces/{nameSpace}/pods")
             .WithOAuthBearerToken(_config.Value.AccessToken)
             .GetJsonAsync().Result;
 
