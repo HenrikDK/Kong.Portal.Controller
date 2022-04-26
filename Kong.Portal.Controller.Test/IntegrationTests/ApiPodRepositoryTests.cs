@@ -45,7 +45,7 @@ public class ApiPodRepositoryTests
     {
         var repository = _container.GetInstance<IApiPodRepository>();
 
-        var pods = repository.GetAll();
+        var pods = repository.GetAll("petstore");
 
         pods.Count.Should().BeGreaterThan(0);
     }
