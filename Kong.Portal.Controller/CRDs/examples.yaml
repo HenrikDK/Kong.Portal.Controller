@@ -17,11 +17,25 @@ spec:
   swagger: /swagger.json
 ---
 apiVersion: "henrik.dk/v1"
-kind: KongApiJson
+kind: KongApiData
 metadata:
   name: petstore-pet-api
   namespace: petstore
 spec:
-  json: "wak wak"
+  data: "wak wak"
   updated: "2020-01-21T21:01:02Z"
-  mergedCount: 0
+---
+apiVersion: "henrik.dk/v1"
+kind: KongApiConfig
+metadata:
+  name: api
+  namespace: petstore
+spec:
+  title: "Test API"
+  description: "A combined api of the entire system"
+  termsUrl: "https://www.lawinsider.com/dictionary/url-terms"
+  contactEmail: "spam@real.com"
+  licenseName: "Apache 2.0"
+  licenseUrl: "https://www.apache.org/licenses/LICENSE-2.0"
+  securityScheme: "JWTBearer"
+  securityKeyName: ""
