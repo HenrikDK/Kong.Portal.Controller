@@ -66,7 +66,7 @@ public class UpdateClusterApis : IUpdateClusterApis
 
         var newApis = apis.Where(x => entries.All(e => e.Name != x.Name)).ToList();
 
-        var needsUpdate = data.Where(d => pods.Any(p => d.Name == p.Name && d.Updated < p.LastUpdated)).ToList();
+        var needsUpdate = entries.Where(d => pods.Any(p => d.Name == p.Name && d.LastUpdated < p.LastUpdated)).ToList();
 
         var updates = apis.Where(x => needsUpdate.Any(n => n.Name == x.Name)).ToList();
         
