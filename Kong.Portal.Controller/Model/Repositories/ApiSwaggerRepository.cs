@@ -18,10 +18,10 @@ public class ApiSwaggerRepository : IApiSwaggerRepository
 
     public string GetSwaggerJson(KongApi api)
     {
-        var prefix = _configuration.GetValue<string>("ingress-prefix");
+        var suffix = _configuration.GetValue<string>("ingress-suffix");
         var host = _inCluster.Value
             ? $"http://{api.Name}.{api.NameSpace}:{api.Port}{api.Swagger}"
-            : $"https://{api.Name.Substring(0, api.Name.Length - 4)}.{api.NameSpace}.{prefix}{api.Swagger}";
+            : $"https://{api.Name.Substring(0, api.Name.Length - 4)}.{api.NameSpace}.{suffix}{api.Swagger}";
         
         var swagger = host
             .AllowHttpStatus("4xx")

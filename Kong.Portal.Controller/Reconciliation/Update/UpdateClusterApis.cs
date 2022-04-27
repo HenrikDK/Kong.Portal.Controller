@@ -139,10 +139,10 @@ public class UpdateClusterApis : IUpdateClusterApis
             if (string.IsNullOrEmpty(swagger)) return false;
 
             var json = JObject.Parse(swagger);
-            var prefix = _configuration.GetValue<string>("ingress-prefix");
+            var suffix = _configuration.GetValue<string>("ingress-suffix");
 
             json["servers"] = new JObject();
-            json["servers"]["url"] = $"https://{api.Name}.{api.NameSpace}.{prefix}";
+            json["servers"]["url"] = $"https://{api.Name}.{api.NameSpace}.{suffix}";
 
             swagger = json.ToString();
 
