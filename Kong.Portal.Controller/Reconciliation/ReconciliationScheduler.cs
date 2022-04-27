@@ -9,12 +9,16 @@ public interface IReconciliationScheduler
     
 public class ReconciliationScheduler : IReconciliationScheduler
 {
+    private readonly ILogger<ReconciliationScheduler> _logger;
     private readonly IApiReconciliation _apiReconciliation;
     private readonly ICleanupClusterApis _cleanupClusterApis;
     private TimeSpan _delay = TimeSpan.FromMinutes(1);
     
-    public ReconciliationScheduler(IApiReconciliation apiReconciliation, ICleanupClusterApis cleanupClusterApis)
+    public ReconciliationScheduler(ILogger<ReconciliationScheduler> logger,
+        IApiReconciliation apiReconciliation, 
+        ICleanupClusterApis cleanupClusterApis)
     {
+        _logger = logger;
         _apiReconciliation = apiReconciliation;
         _cleanupClusterApis = cleanupClusterApis;
     }
@@ -30,6 +34,8 @@ public class ReconciliationScheduler : IReconciliationScheduler
             _apiReconciliation.ProcessClusterApis();
             
             _cleanupClusterApis.CleanupApiData();
+            
+            _logger.LogInformation($"Reconciliation loop done, sleeping for {_delay.Minutes} minutes");
 
             WaitForNextExecution(token, stopWatch);
         }
