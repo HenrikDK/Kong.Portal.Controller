@@ -35,7 +35,12 @@ public class ApiReconciliation : IApiReconciliation
         _updateClusterApis = updateClusterApis;
         _kongApiRepository = kongApiRepository;
 
-        _nameSpaces = new Lazy<IList<string>>(() => configuration.GetValue<string>("monitor-namespaces").Split(",").ToList());
+        _nameSpaces = new Lazy<IList<string>>(() =>
+        {
+            var namespaces = _configuration.GetValue<string>("monitor-namespaces");
+            if (string.IsNullOrEmpty(namespaces)) return new List<string>();
+            return namespaces.Split(",").ToList();
+        });
     }
        
     public void ProcessClusterApis()
@@ -54,7 +59,6 @@ public class ApiReconciliation : IApiReconciliation
 
     private void ReconcileApis()
     {
-        
         var apis = _kongApiRepository.GetAll();
 
         var apisInNamespace = apis.ToLookup(x => x.NameSpace);
