@@ -1,7 +1,6 @@
 using Flurl.Util;
 using Kong.Portal.Controller.Model;
 using Kong.Portal.Controller.Model.Extensions;
-using Kong.Portal.Controller.Model.Repositories;
 using Newtonsoft.Json.Linq;
 
 namespace Kong.Portal.Controller.Reconciliation.Merge;
@@ -13,15 +12,6 @@ public interface IMergeOpenApiSchema
     
 public class MergeOpenApiSchema : IMergeOpenApiSchema
 {
-    private readonly IConfiguration _configuration;
-    private readonly IKongApiConfigRepository _kongApiConfigRepository;
-
-    public MergeOpenApiSchema(IConfiguration configuration, IKongApiConfigRepository kongApiConfigRepository)
-    {
-        _configuration = configuration;
-        _kongApiConfigRepository = kongApiConfigRepository;
-    }
-        
     public void Execute(JObject mainSchema, KongApiData api)
     {
         var schema = api.Data.FromBrotliBase64(); 
