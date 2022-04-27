@@ -1,4 +1,4 @@
-global using System.Data;
+global using System;
 global using System.Collections.Generic;
 global using System.Net.Http;
 global using System.IO;
@@ -17,8 +17,10 @@ global using k8s;
 global using Lamar;
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Serialization;
+global using Newtonsoft.Json.Linq;
 global using NUnit.Framework;
 global using NSubstitute;
 global using TestStack.BDDfy.Configuration;
 global using TestStack.BDDfy.Reporters.Html;
 global using TestStack.BDDfy;
+
