@@ -1,6 +1,7 @@
 using Kong.Portal.Controller.Model;
 using Kong.Portal.Controller.Model.Extensions;
 using Kong.Portal.Controller.Model.Repositories;
+using Kong.Portal.Controller.Reconciliation;
 using Kong.Portal.Controller.Reconciliation.Cleanup;
 using Kong.Portal.Controller.Reconciliation.Merge;
 
@@ -74,12 +75,14 @@ public class ShouldDownloadSchemaFromUpdatedApi : AcceptanceTest
     
     public void WhenTheSystemIsRunning()
     {
-        _container = new Container(_registry);
-        var host = _container.GetInstance<ServiceHost>();
-        host.StartAsync(_tokenSource.Token).Wait();
-        Thread.Sleep(500);
-        _tokenSource.Cancel();
-        host.StopAsync(_tokenSource.Token);
+        BuildContainer();
+        var scheduler = _container.GetInstance<IReconciliationScheduler>();
+        _tokenSource.CancelAfter(500);
+        try
+        {
+            scheduler.RunOnInterval(_tokenSource.Token, TimeSpan.FromMinutes(2));
+        }
+        catch (Exception e) { }
     }
     
     public void ThenTheServiceSchemaIsDownloaded()

@@ -1,6 +1,7 @@
 using Kong.Portal.Controller.Model;
 using Kong.Portal.Controller.Model.Extensions;
 using Kong.Portal.Controller.Model.Repositories;
+using Kong.Portal.Controller.Reconciliation;
 using Kong.Portal.Controller.Reconciliation.Cleanup;
 using Kong.Portal.Controller.Reconciliation.Merge;
 
@@ -45,13 +46,13 @@ public class ShouldNotDownloadSchemaIfApiIsNotUpdated : AcceptanceTest
         {
             Name = _api.Name,
             NameSpace = _api.NameSpace,
-            LastUpdated = DateTime.Now
+            LastUpdated = DateTime.Now.AddHours(-3)
         };
 
         podRepository.GetAll(_api.NameSpace).Returns(new List<ApiPod> {pod});
         _registry.AddSingleton(podRepository);
 
-        var state = new List<ApiEntry> {new() {Name = _api.Name, LastUpdated = DateTime.Now.AddHours(-3)}};
+        var state = new List<ApiEntry> {new() {Name = _api.Name, LastUpdated = DateTime.Now}};
         var data = new KongApiData
         {
             Name = "namespace-state",
@@ -75,12 +76,14 @@ public class ShouldNotDownloadSchemaIfApiIsNotUpdated : AcceptanceTest
 
     public void WhenTheSystemIsRunning()
     {
-        _container = new Container(_registry);
-        var host = _container.GetInstance<ServiceHost>();
-        host.StartAsync(_tokenSource.Token).Wait();
-        Thread.Sleep(500);
-        _tokenSource.Cancel();
-        host.StopAsync(_tokenSource.Token);
+        BuildContainer();
+        var scheduler = _container.GetInstance<IReconciliationScheduler>();
+        _tokenSource.CancelAfter(500);
+        try
+        {
+            scheduler.RunOnInterval(_tokenSource.Token, TimeSpan.FromMinutes(2));
+        }
+        catch (Exception e) { }
     }
 
     public void ThenTheServiceIsNotContacted()
