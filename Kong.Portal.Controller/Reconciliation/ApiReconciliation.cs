@@ -53,7 +53,7 @@ public class ApiReconciliation : IApiReconciliation
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error processing cluster apis");
+            _logger.LogError(e, "Exception processing cluster apis");
         }
     }
 
@@ -68,8 +68,7 @@ public class ApiReconciliation : IApiReconciliation
 
     private void ReconcileNamespace(string nameSpace, List<KongApi> apis)
     {
-        var monitored = _nameSpaces.Value;
-        if (monitored.Any() && !monitored.Contains(nameSpace)) return;
+        if (_nameSpaces.Value.Any() && !_nameSpaces.Value.Contains(nameSpace)) return;
 
         var config = _kongApiConfigRepository.GetFirstIn(nameSpace);
 
