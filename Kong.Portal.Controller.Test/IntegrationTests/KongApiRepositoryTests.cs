@@ -49,4 +49,14 @@ public class KongApiRepositoryTests
 
         apis.Count.Should().BeGreaterThan(0);
     }
+    
+    //[Test]
+    public void Should_get_kong_apis_from_cluster_namespace()
+    {
+        var repository = _container.GetInstance<IKongApiRepository>();
+
+        var apis = repository.GetAll("petstore");
+
+        apis.Count.Should().BeGreaterThan(0);
+    }
 }
