@@ -1,38 +1,25 @@
 namespace Kong.Portal.Controller.Test.AcceptanceTests.Cleanup;
 
 [Story(AsA = "User", 
-    IWant = "To conserve cluster resources", 
-    SoThat = "I avoid excessive maintenance costs in production")]
+    IWant = "To cleanup cluster objects", 
+    SoThat = "I avoid excessive cluster usage")]
 public class CleanupClusterDataTests : Reporting
 {
-    /*
     [Test]
-    public void ASingleServiceShouldBeMerged()
+    public void ShouldCleanupUnusedClusterObjects()
     {
-        new ASingleServiceShouldBeMerged().BDDfy<MergeSchemaTests>();
-    }
-
-    [Test]
-    public void MultipleServiceSchemasShouldBeMerged()
-    {
-        new MultipleServiceSchemasShouldBeMerged().BDDfy<MergeSchemaTests>();
-    }
-        
-    [Test]
-    public void MergedServiceSchemasShouldHaveTheirTypesRenamed()
-    {
-        new MergedServiceSchemasShouldHaveTheirTypesRenamed().BDDfy<MergeSchemaTests>();
+        new ShouldCleanupUnusedClusterObjects().BDDfy<CleanupClusterDataTests>();
     }
     
     [Test]
-    public void SecurityRequirementsShouldBeAddedAfterMerge()
+    public void ShouldCleanupEmptyNamespaces()
     {
-        new SecurityRequirementsShouldBeAddedAfterMerge().BDDfy<MergeSchemaTests>();
+        new ShouldCleanupEmptyNamespaces().BDDfy<CleanupClusterDataTests>();
     }
-        
+    
     [Test]
-    public void ApiShouldBeRenamedAfterMerge()
+    public void ShouldCleanupUnusedMergeApiDataObjects()
     {
-        new ApiShouldBeRenamedAfterMerge().BDDfy<MergeSchemaTests>();
-    }*/
+        new ShouldCleanupUnusedMergeApiDataObjects().BDDfy<CleanupClusterDataTests>();
+    }
 }
