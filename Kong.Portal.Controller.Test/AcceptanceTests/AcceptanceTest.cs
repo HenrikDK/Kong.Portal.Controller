@@ -1,5 +1,6 @@
 using Kong.Portal.Controller.Infrastructure;
 using Kong.Portal.Controller.Reconciliation;
+using Kong.Portal.Controller.Reconciliation.Cleanup;
 using Kong.Portal.Controller.Reconciliation.Merge;
 using Kong.Portal.Controller.Reconciliation.Update;
 
@@ -8,10 +9,10 @@ namespace Kong.Portal.Controller.Test.AcceptanceTests;
 public class AcceptanceTest
 {
     protected CancellationTokenSource _tokenSource = new CancellationTokenSource();
+    protected Dictionary<string, string> _configuration = new();
 
     protected WorkerRegistry _registry;
     protected Container _container;
-    private IConfiguration _configuration;
 
     public AcceptanceTest()
     {
@@ -23,15 +24,18 @@ public class AcceptanceTest
             x.LookForRegistries();
         });
 
-        MockConfiguration();
         MockLogging();
         MockMemoryCache();
     }
 
-    private void MockConfiguration()
+    protected void BuildContainer()
     {
-        _configuration = Substitute.For<IConfiguration>();
-        _registry.AddSingleton(_configuration);
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(_configuration)
+            .Build();
+        _registry.AddSingleton((IConfiguration) configuration);
+
+        _container = new Container(_registry);
     }
 
     private void MockLogging()
@@ -40,6 +44,7 @@ public class AcceptanceTest
         _registry.AddSingleton(Substitute.For<ILogger<ServiceHost>>());
         _registry.AddSingleton(Substitute.For<ILogger<ReconciliationScheduler>>());
         _registry.AddSingleton(Substitute.For<ILogger<ApiReconciliation>>());
+        _registry.AddSingleton(Substitute.For<ILogger<CleanupClusterApis>>());
         _registry.AddSingleton(Substitute.For<ILogger<UpdateClusterApis>>());
         _registry.AddSingleton(Substitute.For<ILogger<MergeClusterApis>>());
         _registry.AddSingleton(Substitute.For<ILogger<MergeOpenApiSchemas>>());
