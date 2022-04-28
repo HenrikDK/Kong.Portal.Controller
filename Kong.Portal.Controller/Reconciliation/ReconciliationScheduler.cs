@@ -33,7 +33,7 @@ public class ReconciliationScheduler : IReconciliationScheduler
             
             _apiReconciliation.ProcessClusterApis();
             
-            _cleanupClusterApis.CleanupApiData();
+            _cleanupClusterApis.CleanupCluster();
             
             _logger.LogInformation($"Reconciliation loop done, sleeping for {_delay.Minutes} minutes");
 
