@@ -6,32 +6,62 @@ namespace Kong.Portal.Controller.Test.AcceptanceTests.Merge;
 public class MergeSchemaTests : Reporting
 {
     [Test]
-    public void ASingleServiceShouldBeMerged()
+    public void ShouldMergeApisWhenConfigurationIsPresentInNamespace()
     {
-        new ASingleServiceShouldBeMerged().BDDfy<MergeSchemaTests>();
-    }
-
-    [Test]
-    public void MultipleServiceSchemasShouldBeMerged()
-    {
-        new MultipleServiceSchemasShouldBeMerged().BDDfy<MergeSchemaTests>();
-    }
-        
-    [Test]
-    public void MergedServiceSchemasShouldHaveTheirTypesRenamed()
-    {
-        new MergedServiceSchemasShouldHaveTheirTypesRenamed().BDDfy<MergeSchemaTests>();
+        new ShouldMergeApisWhenConfigurationIsPresentInNamespace().BDDfy<MergeSchemaTests>();
     }
     
     [Test]
-    public void SecurityRequirementsShouldBeAddedAfterMerge()
+    public void ShouldNotMergeApisIfConfigurationIsMissingFromNamespace()
     {
-        new SecurityRequirementsShouldBeAddedAfterMerge().BDDfy<MergeSchemaTests>();
+        new ShouldNotMergeApisIfConfigurationIsMissingFromNamespace().BDDfy<MergeSchemaTests>();
     }
-        
+
     [Test]
-    public void ApiShouldBeRenamedAfterMerge()
+    public void ShouldPersistNewInputApiSpecInCluster()
     {
-        new ApiShouldBeRenamedAfterMerge().BDDfy<MergeSchemaTests>();
+        new ShouldPersistNewInputApiSpecInCluster().BDDfy<MergeSchemaTests>();
+    }
+
+    [Test]
+    public void ShouldPersistUpdatedInputApiSpecInCluster()
+    {
+        new ShouldPersistUpdatedInputApiSpecInCluster().BDDfy<MergeSchemaTests>();
+    }
+
+    [Test]
+    public void ShouldDeletePersistedSpecIfApiIsNoLongerInCluster()
+    {
+        //new ShouldDeletePersistedSpecIfApiIsNoLongerInCluster().BDDfy<MergeSchemaTests>();
+    }
+
+    [Test]
+    public void ShouldPersistMergedApiSpecInCluster()
+    {
+        //new ShouldPersistMergedApiSpecInCluster().BDDfy<MergeSchemaTests>();
+    }
+
+    [Test]
+    public void ShouldUpdateKongWithMergedApiSpec()
+    {
+        //new ShouldUpdateKongWithMergedApiSpec().BDDfy<MergeSchemaTests>();
+    }
+
+    [Test]
+    public void ShouldMergeMultipleApisIntoOneMergedApi()
+    {
+        //new ShouldMergeMultipleApisIntoOneMergedApi().BDDfy<MergeSchemaTests>();
+    }
+
+    [Test]
+    public void ShouldSetValuesInMergedSpecBasedOnConfiguration()
+    {
+        //new ShouldSetValuesInMergedSpecBasedOnConfiguration().BDDfy<MergeSchemaTests>();
+    }
+
+    [Test]
+    public void ShouldRenameApiEntitiesDuringMergeToAvoidNamingCollisions()
+    {
+        //new ShouldRenameApiEntitiesDuringMergeToAvoidNamingCollisions().BDDfy<MergeSchemaTests>();
     }
 }
