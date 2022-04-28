@@ -6,8 +6,38 @@ namespace Kong.Portal.Controller.Test.AcceptanceTests.Update;
 public class UpdateServiceTests : Reporting
 {
     [Test]
-    public void ASingleServiceShouldNotBeMerged()
+    public void ShouldUpdateKongWithNewApi()
     {
-        new ASingleServiceShouldNotBeMerged().BDDfy<UpdateServiceTests>();
+        new ShouldUpdateKongWithNewApi().BDDfy<UpdateServiceTests>();
+    }
+    
+    [Test]
+    public void ShouldUpdateKongWithUpdatedApi()
+    {
+        new ShouldUpdateKongWithUpdatedApi().BDDfy<UpdateServiceTests>();
+    }
+
+    [Test]
+    public void ShouldDeleteApiNoLongerInCluster()
+    {
+        new ShouldDeleteApiNoLongerInCluster().BDDfy<UpdateServiceTests>();
+    }
+
+    [Test]
+    public void ShouldAddIngressInfoToSpecWhenUpdatingKong()
+    {
+        new ShouldAddIngressInfoToSpecWhenUpdatingKong().BDDfy<UpdateServiceTests>();
+    }
+
+    [Test]
+    public void ShouldLogErrorIfUpdateFails()
+    {
+        new ShouldLogErrorIfUpdateFails().BDDfy<UpdateServiceTests>();
+    }
+
+    [Test]
+    public void ShouldPersistNamespaceStateInCluster()
+    {
+        new ShouldPersistNamespaceStateInCluster().BDDfy<UpdateServiceTests>();
     }
 }
