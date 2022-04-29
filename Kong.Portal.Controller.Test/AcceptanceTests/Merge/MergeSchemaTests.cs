@@ -38,30 +38,30 @@ public class MergeSchemaTests : Reporting
     [Test]
     public void ShouldPersistMergedApiSpecInCluster()
     {
-        //new ShouldPersistMergedApiSpecInCluster().BDDfy<MergeSchemaTests>();
+        new ShouldPersistMergedApiSpecInCluster().BDDfy<MergeSchemaTests>();
     }
 
     [Test]
     public void ShouldUpdateKongWithMergedApiSpec()
     {
-        //new ShouldUpdateKongWithMergedApiSpec().BDDfy<MergeSchemaTests>();
+        new ShouldUpdateKongWithMergedApiSpec().BDDfy<MergeSchemaTests>();
     }
 
     [Test]
     public void ShouldMergeMultipleApisIntoOneMergedApi()
     {
-        //new ShouldMergeMultipleApisIntoOneMergedApi().BDDfy<MergeSchemaTests>();
+        new ShouldMergeMultipleApisIntoOneMergedApi().BDDfy<MergeSchemaTests>();
     }
 
     [Test]
     public void ShouldSetValuesInMergedSpecBasedOnConfiguration()
     {
-        //new ShouldSetValuesInMergedSpecBasedOnConfiguration().BDDfy<MergeSchemaTests>();
+        new ShouldSetValuesInMergedSpecBasedOnConfiguration().BDDfy<MergeSchemaTests>();
     }
 
     [Test]
     public void ShouldRenameApiEntitiesDuringMergeToAvoidNamingCollisions()
     {
-        //new ShouldRenameApiEntitiesDuringMergeToAvoidNamingCollisions().BDDfy<MergeSchemaTests>();
+        new ShouldRenameApiEntitiesDuringMergeToAvoidNamingCollisions().BDDfy<MergeSchemaTests>();
     }
 }
