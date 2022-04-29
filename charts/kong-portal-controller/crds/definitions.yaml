@@ -1,0 +1,96 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: kong-apis.henrik.dk
+spec:
+  group: henrik.dk
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                port:
+                  type: integer
+                swagger:
+                  type: string
+  scope: Namespaced
+  names:
+    plural: kong-apis
+    singular: kong-api
+    kind: KongApi
+    shortNames:
+      - ka
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: kong-api-data.henrik.dk
+spec:
+  group: henrik.dk
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                data:
+                  type: string
+                updated:
+                  type: string
+  scope: Namespaced
+  names:
+    plural: kong-api-data
+    kind: KongApiData
+    shortNames:
+      - kaj
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: kong-api-configs.henrik.dk
+spec:
+  group: henrik.dk
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                termsUrl:
+                  type: string
+                contactEmail:
+                  type: string
+                licenseName:
+                  type: string
+                licenseUrl:
+                  type: string
+                securityScheme:
+                  type: string
+                securityKeyName:
+                  type: string
+  scope: Namespaced
+  names:
+    plural: kong-api-configs
+    kind: KongApiConfig
+    shortNames:
+      - kac
