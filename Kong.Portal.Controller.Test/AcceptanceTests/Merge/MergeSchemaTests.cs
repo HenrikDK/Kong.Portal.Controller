@@ -32,7 +32,7 @@ public class MergeSchemaTests : Reporting
     [Test]
     public void ShouldDeletePersistedSpecIfApiIsNoLongerInCluster()
     {
-        //new ShouldDeletePersistedSpecIfApiIsNoLongerInCluster().BDDfy<MergeSchemaTests>();
+        new ShouldDeletePersistedSpecIfApiIsNoLongerInCluster().BDDfy<MergeSchemaTests>();
     }
 
     [Test]
