@@ -20,7 +20,7 @@ public class MergeOpenApiSchemas : IMergeOpenApiSchemas
   ""info"": {""title"": """", ""version"": ""v1""},
   ""paths"": {},
   ""components"": {""schemas"": {}},
-  ""servers"": {""url"": ""}
+  ""servers"": {""url"": """"}
 }";
     private readonly IKongApiConfigRepository _kongApiConfigRepository;
     private readonly IConfiguration _configuration;
