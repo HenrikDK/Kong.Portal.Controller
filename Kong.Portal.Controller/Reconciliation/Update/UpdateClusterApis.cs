@@ -141,8 +141,11 @@ public class UpdateClusterApis : IUpdateClusterApis
             var json = JObject.Parse(swagger);
             var suffix = _configuration.GetValue<string>("ingress-suffix");
 
-            json["servers"] = new JObject();
-            json["servers"]["url"] = $"https://{api.Name}.{api.NameSpace}.{suffix}";
+            var url = new JObject();
+            url["url"] = $"https://{api.Name}.{api.NameSpace}.{suffix}";
+            var array = new JArray();
+            array.Add(url);
+            json["servers"] = array;
 
             swagger = json.ToString();
 

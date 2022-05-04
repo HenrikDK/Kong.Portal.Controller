@@ -67,7 +67,11 @@ public class MergeOpenApiSchemas : IMergeOpenApiSchemas
     private void UpdateSchemaMasterData(JObject mainSchema, string name, string nameSpace)
     {
         var suffix = _configuration.GetValue<string>("ingress-suffix");
-        mainSchema["servers"]["url"] = $"https://{name}.{nameSpace}.{suffix}";
+        var url = new JObject();
+        url["url"] = $"https://{name}.{nameSpace}.{suffix}";
+        var array = new JArray();
+        array.Add(url);
+        mainSchema["servers"] = array;
         
         var configuration = _kongApiConfigRepository.GetFirstIn(nameSpace);
         if (configuration == null)
