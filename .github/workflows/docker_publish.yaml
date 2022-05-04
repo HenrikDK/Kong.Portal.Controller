@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  release:
+  release-controller:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -25,3 +25,23 @@ jobs:
           build_id+=$(git rev-parse --short "$GITHUB_SHA")
           docker tag kong-portal-controller ${{ secrets.DOCKER_USER }}/kong-portal-controller:$build_id
           docker push ${{ secrets.DOCKER_USER }}/kong-portal-controller:$build_id
+
+  release-portal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Build Image
+        run: docker build . --file Dockerfile --tag kong-portal-ui
+        working-directory: Kong.Portal.Ui
+
+      - name: Log In
+        run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+
+      - name: Push Image
+        run: |
+          build_id=$(date +'%Y%m%d')
+          build_id+="-"
+          build_id+=$(git rev-parse --short "$GITHUB_SHA")
+          docker tag kong-portal-ui ${{ secrets.DOCKER_USER }}/kong-portal-ui:$build_id
+          docker push ${{ secrets.DOCKER_USER }}/kong-portal-ui:$build_id
