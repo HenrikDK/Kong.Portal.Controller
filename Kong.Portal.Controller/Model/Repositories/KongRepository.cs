@@ -20,9 +20,13 @@ public class KongRepository : IKongRepository
         var host = _config.GetValue<string>("kong-admin-url");
         var token = _config.GetValue<string>("kong-token");
 
-        var result = host.AppendPathSegment($"/default/files/specs/k8s-{nameSpace}-{name}.json")
+        var result = host.AppendPathSegment("/default/files")
             .WithHeader("Kong-Admin-Token", token)
-            .PostJsonAsync(new {data}).Result;
+            .PostMultipartAsync(mp =>
+            {
+                mp.AddString("path", $"specs/k8s-{nameSpace}-{name}.json");
+                mp.AddString("content", data);
+            }).Result;
     }
 
     public void Delete(string name, string nameSpace)

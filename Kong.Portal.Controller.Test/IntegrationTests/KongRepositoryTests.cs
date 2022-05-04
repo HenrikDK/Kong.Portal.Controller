@@ -26,22 +26,22 @@ public class KongRepositoryTests
         registry.AddSingleton(_configuration);
         _container = new Container(registry);
     }
-
-    //[Test]
-    public void Should_remove_api_from_kong()
-    {
-        var repository = _container.GetInstance<IKongRepository>();
-
-        repository.Delete("api", "petstore");
-    }
     
-    //[Test]
-    public void Should_add_api_to_kong()
+    [Test]
+    public void Should_update_api_in_kong_developer_portal()
     {
         var repository = _container.GetInstance<IKongRepository>();
 
         var swagger = File.ReadAllText("/data/swagger.json");
 
-        repository.Update("api", "petstore", swagger);
+        var json = JObject.Parse(swagger);
+        
+        var url = new JObject();
+        url["url"] = $"https://api.petstore.henrik.dk";
+        var array = new JArray();
+        array.Add(url);
+        json["servers"] = array;
+        
+        repository.Update("api", "petstore", json.ToString());
     }
 }
