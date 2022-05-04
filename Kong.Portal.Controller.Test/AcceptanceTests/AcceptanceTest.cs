@@ -11,12 +11,12 @@ public class AcceptanceTest
     protected CancellationTokenSource _tokenSource = new CancellationTokenSource();
     protected Dictionary<string, string> _configuration = new();
 
-    protected WorkerRegistry _registry;
+    protected ServiceRegistry _registry;
     protected Container _container;
 
     public AcceptanceTest()
     {
-        _registry = new WorkerRegistry();
+        _registry = new ServiceRegistry();
         _registry.Scan(x =>
         {
             x.AssemblyContainingType<ServiceHost>();
