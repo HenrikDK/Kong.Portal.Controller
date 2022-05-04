@@ -1,6 +1,0 @@
-apiVersion: v2
-name: kong-portal-controller
-appVersion: "1.0.1"
-version: 1.0.1
-description: Automates updating the Kong developer portal when new KongApi's are deployed
-type: application
