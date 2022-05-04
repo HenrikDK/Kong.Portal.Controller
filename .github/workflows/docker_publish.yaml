@@ -1,24 +1,24 @@
-name: Publish Kong Portal Controller
+name: Release Components
 
 on:
   push:
-    # Publish `master` as Docker `latest` image.
     branches:
       - master
+
 jobs:
-  build-controller:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
 
-      - name: Build docker image
+      - name: Build Image
         run: docker build . --file Dockerfile --tag kong-portal-controller
         working-directory: Kong.Portal.Controller
 
-      - name: Log into registry
+      - name: Log In
         run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
 
-      - name: Push docker image
+      - name: Push Image
         run: |
           build_id=$(date +'%Y%m%d')
           build_id+="-"
