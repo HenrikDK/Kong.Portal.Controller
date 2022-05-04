@@ -152,7 +152,7 @@ public class ShouldSetValuesInMergedSpecBasedOnConfiguration : AcceptanceTest
     public void ThenTheMergedSpecContainsValuesProvidedInConfiguration()
     {
         var spec = JObject.Parse(_json);
-        spec["servers"]["url"].ToString().Should().Be($"https://api.{_firstApi.NameSpace}.{_ingressSuffix}");
+        spec["servers"][0]["url"].ToString().Should().Be($"https://api.{_firstApi.NameSpace}.{_ingressSuffix}");
         
         spec["info"]["title"].ToString().Should().Be(_config.Title);
         spec["info"]["description"].ToString().Should().Be(_config.Description);
