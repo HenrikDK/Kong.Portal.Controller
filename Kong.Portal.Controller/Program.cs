@@ -1,4 +1,5 @@
 using Kong.Portal.Controller;
+using Kong.Portal.Controller.Infrastructure;
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()

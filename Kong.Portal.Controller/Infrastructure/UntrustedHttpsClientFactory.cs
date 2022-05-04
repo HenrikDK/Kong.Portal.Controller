@@ -1,4 +1,4 @@
-
+namespace Kong.Portal.Controller.Infrastructure;
 
 public class UntrustedHttpsClientFactory : DefaultHttpClientFactory
 {
