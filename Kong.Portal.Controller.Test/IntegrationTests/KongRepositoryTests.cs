@@ -26,7 +26,7 @@ public class KongRepositoryTests
         registry.AddSingleton(_configuration);
         _container = new Container(registry);
     }
-    
+
     //[Test]
     public void Should_update_api_in_kong_developer_portal()
     {
@@ -35,13 +35,13 @@ public class KongRepositoryTests
         var swagger = File.ReadAllText("/data/swagger.json");
 
         var json = JObject.Parse(swagger);
-        
+
         var url = new JObject();
         url["url"] = $"https://api.petstore.henrik.dk";
         var array = new JArray();
         array.Add(url);
         json["servers"] = array;
-        
+
         repository.Update("api", "petstore", json.ToString());
     }
 }
