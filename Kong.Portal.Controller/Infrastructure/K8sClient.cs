@@ -1,8 +1,3 @@
-using System.Dynamic;
-using System.Runtime.InteropServices;
-using Microsoft.Extensions.Caching.Memory;
-using YamlDotNet.Serialization;
-
 namespace Kong.Portal.Controller.Infrastructure;
 
 public interface IK8sClient
