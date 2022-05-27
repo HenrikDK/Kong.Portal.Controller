@@ -1,3 +1,5 @@
+using Kong.Portal.Controller.Infrastructure;
+
 namespace Kong.Portal.Controller.Model.Repositories;
 
 public interface IKongApiRepository
@@ -8,21 +10,19 @@ public interface IKongApiRepository
     
 public class KongApiRepository : IKongApiRepository
 {
-    private Lazy<KubernetesClientConfiguration> _config;
+    private readonly IK8sClient _client;
 
-    public KongApiRepository()
+    public KongApiRepository(IK8sClient client)
     {
-        _config = new Lazy<KubernetesClientConfiguration>(() => KubernetesClientConfiguration.IsInCluster()
-            ? KubernetesClientConfiguration.InClusterConfig()
-            : KubernetesClientConfiguration.BuildDefaultConfig());
+        _client = client;
     }
     
     public IList<KongApi> GetAll()
     {
-        var host = _config.Value.Host;
+        var host = _client.Host;
 
         var pods = host.AppendPathSegment("/apis/henrik.dk/v1/kong-apis")
-            .WithOAuthBearerToken(_config.Value.AccessToken)
+            .WithOAuthBearerToken(_client.AccessToken)
             .GetJsonAsync().Result;
 
         var apis = new List<KongApi>();
@@ -42,10 +42,10 @@ public class KongApiRepository : IKongApiRepository
     
     public IList<KongApi> GetAll(string nameSpace)
     {
-        var host = _config.Value.Host;
+        var host = _client.Host;
 
         var pods = host.AppendPathSegment($"/apis/henrik.dk/v1/namespaces/{nameSpace}/kong-apis")
-            .WithOAuthBearerToken(_config.Value.AccessToken)
+            .WithOAuthBearerToken(_client.AccessToken)
             .GetJsonAsync().Result;
 
         var apis = new List<KongApi>();

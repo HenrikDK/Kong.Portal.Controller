@@ -1,3 +1,5 @@
+using Kong.Portal.Controller.Infrastructure;
+
 namespace Kong.Portal.Controller.Model.Repositories;
 
 public interface IApiSwaggerRepository
@@ -8,20 +10,20 @@ public interface IApiSwaggerRepository
 public class ApiSwaggerRepository : IApiSwaggerRepository
 {
     private readonly IConfiguration _configuration;
-    private Lazy<bool> _inCluster;
+    private readonly IK8sClient _client;
 
-    public ApiSwaggerRepository(IConfiguration configuration)
+    public ApiSwaggerRepository(IConfiguration configuration, IK8sClient client)
     {
         _configuration = configuration;
-        _inCluster = new Lazy<bool>(() => KubernetesClientConfiguration.IsInCluster());
+        _client = client;
     }
 
     public string GetSwaggerJson(KongApi api)
     {
         var suffix = _configuration.GetValue<string>("ingress-suffix");
-        var host = _inCluster.Value
-            ? $"http://{api.Name}.{api.NameSpace}:{api.Port}{api.Swagger}"
-            : $"https://{api.Name.Substring(0, api.Name.Length - 4)}.{api.NameSpace}.{suffix}{api.Swagger}";
+        var host = _client.InCluster ? 
+            $"http://{api.Name}.{api.NameSpace}:{api.Port}{api.Swagger}" :
+            $"https://{api.Name.Substring(0, api.Name.Length - 4)}.{api.NameSpace}.{suffix}{api.Swagger}";
         
         var swagger = host
             .AllowHttpStatus("4xx")

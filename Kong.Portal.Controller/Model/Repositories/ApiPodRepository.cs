@@ -1,3 +1,5 @@
+using Kong.Portal.Controller.Infrastructure;
+
 namespace Kong.Portal.Controller.Model.Repositories;
 
 public interface IApiPodRepository
@@ -7,21 +9,19 @@ public interface IApiPodRepository
     
 public class ApiPodRepository : IApiPodRepository
 {
-    private Lazy<KubernetesClientConfiguration> _config;
-
-    public ApiPodRepository()
+    private readonly IK8sClient _client;
+ 
+    public ApiPodRepository(IK8sClient client)
     {
-        _config = new Lazy<KubernetesClientConfiguration>(() => KubernetesClientConfiguration.IsInCluster()
-            ? KubernetesClientConfiguration.InClusterConfig()
-            : KubernetesClientConfiguration.BuildDefaultConfig());
+        _client = client;
     }
 
     public IList<ApiPod> GetAll(string nameSpace)
     {
-        var host = _config.Value.Host;
+        var host = _client.Host;
 
         var pods = host.AppendPathSegment($"/api/v1/namespaces/{nameSpace}/pods")
-            .WithOAuthBearerToken(_config.Value.AccessToken)
+            .WithOAuthBearerToken(_client.AccessToken)
             .GetJsonAsync().Result;
 
         var apiPods = new List<ApiPod>();

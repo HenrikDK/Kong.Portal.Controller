@@ -1,3 +1,5 @@
+using Kong.Portal.Controller.Infrastructure;
+
 namespace Kong.Portal.Controller.Model.Repositories;
 
 public interface IKongApiDataRepository
@@ -10,21 +12,19 @@ public interface IKongApiDataRepository
 
 public class KongApiDataRepository : IKongApiDataRepository
 {
-    private Lazy<KubernetesClientConfiguration> _config;
+    private readonly IK8sClient _client;
 
-    public KongApiDataRepository()
+    public KongApiDataRepository(IK8sClient client)
     {
-        _config = new Lazy<KubernetesClientConfiguration>(() => KubernetesClientConfiguration.IsInCluster()
-            ? KubernetesClientConfiguration.InClusterConfig()
-            : KubernetesClientConfiguration.BuildDefaultConfig());
+        _client = client;
     }
     
     public IList<KongApiData> GetAll()
     {
-        var host = _config.Value.Host;
+        var host = _client.Host;
 
         var apis = host.AppendPathSegment($"/apis/henrik.dk/v1/kong-api-data")
-            .WithOAuthBearerToken(_config.Value.AccessToken)
+            .WithOAuthBearerToken(_client.AccessToken)
             .GetJsonAsync().Result;
 
         var result = new List<KongApiData>();
@@ -44,10 +44,10 @@ public class KongApiDataRepository : IKongApiDataRepository
     
     public IList<KongApiData> GetAll(string nameSpace)
     {
-        var host = _config.Value.Host;
+        var host = _client.Host;
 
         var apis = host.AppendPathSegment($"/apis/henrik.dk/v1/namespaces/{nameSpace}/kong-api-data")
-            .WithOAuthBearerToken(_config.Value.AccessToken)
+            .WithOAuthBearerToken(_client.AccessToken)
             .GetJsonAsync().Result;
 
         var result = new List<KongApiData>();
@@ -67,20 +67,20 @@ public class KongApiDataRepository : IKongApiDataRepository
 
     public void Delete(KongApiData data)
     {
-        var host = _config.Value.Host;
+        var host = _client.Host;
 
         var result = host.AppendPathSegment($"/apis/henrik.dk/v1/namespaces/{data.NameSpace}/kong-api-data/{data.Name}")
             .AllowHttpStatus("4xx")
-            .WithOAuthBearerToken(_config.Value.AccessToken)
+            .WithOAuthBearerToken(_client.AccessToken)
             .DeleteAsync().Result;
     }
 
     public void Insert(KongApiData data)
     {
-        var host = _config.Value.Host;
+        var host = _client.Host;
 
         var result = host.AppendPathSegment($"/apis/henrik.dk/v1/namespaces/{data.NameSpace}/kong-api-data")
-            .WithOAuthBearerToken(_config.Value.AccessToken)
+            .WithOAuthBearerToken(_client.AccessToken)
             .PostJsonAsync(new
             {
                 apiVersion = "henrik.dk/v1",

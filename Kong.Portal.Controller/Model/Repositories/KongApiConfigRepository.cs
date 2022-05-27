@@ -1,3 +1,5 @@
+using Kong.Portal.Controller.Infrastructure;
+
 namespace Kong.Portal.Controller.Model.Repositories;
 
 public interface IKongApiConfigRepository
@@ -7,21 +9,19 @@ public interface IKongApiConfigRepository
     
 public class KongApiConfigRepository : IKongApiConfigRepository
 {
-    private Lazy<KubernetesClientConfiguration> _config;
+    private readonly IK8sClient _client;
 
-    public KongApiConfigRepository()
+    public KongApiConfigRepository(IK8sClient client)
     {
-        _config = new Lazy<KubernetesClientConfiguration>(() => KubernetesClientConfiguration.IsInCluster()
-            ? KubernetesClientConfiguration.InClusterConfig()
-            : KubernetesClientConfiguration.BuildDefaultConfig());
+        _client = client;
     }
     
     public KongApiConfig GetFirstIn(string nameSpace)
     {
-        var host = _config.Value.Host;
+        var host = _client.Host;
 
         var pods = host.AppendPathSegment($"/apis/henrik.dk/v1/namespaces/{nameSpace}/kong-api-configs")
-            .WithOAuthBearerToken(_config.Value.AccessToken)
+            .WithOAuthBearerToken(_client.AccessToken)
             .GetJsonAsync().Result;
 
         var apis = new List<KongApiConfig>();
