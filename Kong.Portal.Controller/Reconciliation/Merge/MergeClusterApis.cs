@@ -76,7 +76,7 @@ public class MergeClusterApis : IMergeClusterApis
 
         _logger.LogInformation("Determining apis to be deleted");
 
-        var deletes = data.Where(e => pods.All(p => e.Name != p.Name)).ToList();
+        var deletes = data.Where(e => pods.All(p => e.Name != p.Name) && e.Name != "api").ToList();
 
         if (deletes.Any())
         {
