@@ -95,7 +95,7 @@ public class K8sClient : IK8sClient
         var token = "";
         foreach (var entry in config.users)
         {
-            if (entry.name != currentContext) continue;
+            if (!entry.name.ToString().EndsWith(currentContext)) continue;
             try
             {
                 token = entry.user.token;
