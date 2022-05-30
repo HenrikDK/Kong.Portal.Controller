@@ -13,7 +13,6 @@ global using FluentAssertions;
 global using Flurl;
 global using Flurl.Http;
 global using Flurl.Http.Configuration;
-global using k8s;
 global using Lamar;
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Serialization;
