@@ -12,11 +12,7 @@ public class KongApiRepositoryTests
     [SetUp]
     public void Setup()
     {
-        var config = KubernetesClientConfiguration.IsInCluster()
-            ? KubernetesClientConfiguration.InClusterConfig()
-            : KubernetesClientConfiguration.BuildDefaultConfig();
-
-        FlurlHttp.ConfigureClient(config.Host, cli => cli.Settings.HttpClientFactory = new UntrustedHttpsClientFactory());
+        FlurlHttp.ConfigureClient(K8sClient.Server, cli => cli.Settings.HttpClientFactory = new UntrustedHttpsClientFactory());
         FlurlHttp.Configure(c =>
         {
             c.JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
