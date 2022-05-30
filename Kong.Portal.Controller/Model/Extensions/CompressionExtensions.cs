@@ -1,6 +1,3 @@
-using System.IO.Compression;
-using System.Text;
-
 namespace Kong.Portal.Controller.Model.Extensions;
 
 public static class CompressionExtensions
