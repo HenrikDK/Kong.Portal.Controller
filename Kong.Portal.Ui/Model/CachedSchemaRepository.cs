@@ -1,3 +1,5 @@
+using Kong.Portal.Ui.Infrastructure;
+
 namespace Kong.Portal.Ui.Model;
 
 public interface ICachedSchemaRepository
@@ -9,15 +11,13 @@ public class CachedSchemaRepository : ICachedSchemaRepository
 {
     private readonly IConfiguration _configuration;
     private readonly IMemoryCache _cache;
-    private Lazy<KubernetesClientConfiguration> _config;
+    private readonly IK8sClient _client;
 
-    public CachedSchemaRepository(IConfiguration configuration, IMemoryCache cache)
+    public CachedSchemaRepository(IConfiguration configuration, IMemoryCache cache, IK8sClient client)
     {
         _configuration = configuration;
         _cache = cache;
-        _config = new Lazy<KubernetesClientConfiguration>(() => KubernetesClientConfiguration.IsInCluster()
-            ? KubernetesClientConfiguration.InClusterConfig()
-            : KubernetesClientConfiguration.BuildDefaultConfig());
+        _client = client;
     }
     
     public string GetSchema()
@@ -37,10 +37,10 @@ public class CachedSchemaRepository : ICachedSchemaRepository
     
     public IList<KongApiData> GetAll(string nameSpace)
     {
-        var host = _config.Value.Host;
+        var host = _client.Host;
 
         var apis = host.AppendPathSegment($"/apis/henrik.dk/v1/namespaces/{nameSpace}/kong-api-data")
-            .WithOAuthBearerToken(_config.Value.AccessToken)
+            .WithOAuthBearerToken(_client.AccessToken)
             .GetJsonAsync().Result;
 
         var result = new List<KongApiData>();
