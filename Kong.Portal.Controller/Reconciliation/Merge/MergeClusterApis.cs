@@ -41,6 +41,8 @@ public class MergeClusterApis : IMergeClusterApis
         }
         catch (Exception e)
         {
+            e.WithContext("namespace", nameSpace);
+            
             _logger.LogError(e, "Api merge failed");
         }
     }
@@ -50,6 +52,8 @@ public class MergeClusterApis : IMergeClusterApis
         var pods = _apiPodRepository.GetAll(nameSpace);
 
         var data = _kongApiDataRepository.GetAll(nameSpace);
+        
+        _logger.LogInformation("Checking if any apis have been updated.");
         
         var newApis = apis.Where(x => data.All(e => e.Name != x.Name)).ToList();
 
@@ -74,18 +78,20 @@ public class MergeClusterApis : IMergeClusterApis
             });
         }
 
-        _logger.LogInformation("Determining apis to be deleted");
+        _logger.LogInformation("Determining if any apis should be deleted");
 
         var deletes = data.Where(e => pods.All(p => e.Name != p.Name) && e.Name != "api").ToList();
 
         if (deletes.Any())
         {
-            _logger.LogInformation($"Deleting {deletes.Count} apis from cluster, that are no longer deployed");
+            _logger.LogInformation($"Deleting {deletes.Count} apis, from cluster that are no longer deployed");
             deletes.ForEach(DeleteApi);
         }
 
         if (deletes.Any() || updated.Any())
         {
+            _logger.LogInformation($"Found {updated.Count} updated apis and {deletes.Count} deleted apis, updating merged schema.");
+            
             var freshData = _kongApiDataRepository.GetAll(nameSpace);
             freshData = freshData.Where(x => x.Name != "api" && x.Name != "namespace-state").ToList();
 
@@ -99,8 +105,12 @@ public class MergeClusterApis : IMergeClusterApis
                 Data = swagger.ToBrotliBase64()
             };
             
+            _logger.LogInformation("Merge done! persisting new schema.");
+            
             _kongApiDataRepository.Delete(mergeApi);
             _kongApiDataRepository.Insert(mergeApi);
+            
+            _logger.LogInformation("Notifying kong portal of update.");
             
             _kongRepository.Delete(mergeApi.Name, mergeApi.NameSpace);
             _kongRepository.Update(mergeApi.Name, mergeApi.NameSpace, swagger);
@@ -116,6 +126,8 @@ public class MergeClusterApis : IMergeClusterApis
     {
         try
         {
+            _logger.LogInformation($"Updating specification for api {api.Name} in cluster.");
+            
             var swagger = _apiSwaggerRepository.GetSwaggerJson(api);
             if (string.IsNullOrEmpty(swagger)) return false;
 

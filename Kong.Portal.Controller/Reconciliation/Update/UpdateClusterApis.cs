@@ -47,6 +47,8 @@ public class UpdateClusterApis : IUpdateClusterApis
         }
         catch (Exception e)
         {
+            e.WithContext("namespace", nameSpace);
+            
             _logger.LogError(e, "Api updates failed");
         }
     }
@@ -62,7 +64,7 @@ public class UpdateClusterApis : IUpdateClusterApis
         var state = data.FirstOrDefault(x => x.Name == "namespace-state");
         var entries = GetApiEntries(state);
         
-        _logger.LogInformation("Determining apis to update");
+        _logger.LogInformation("Determining what apis to update");
 
         var newApis = apis.Where(x => entries.All(e => e.Name != x.Name)).ToList();
 
@@ -75,7 +77,7 @@ public class UpdateClusterApis : IUpdateClusterApis
         var updated = new List<KongApi>();
         if (updates.Any())
         {
-            _logger.LogInformation($"Updating {updates.Count} apis");
+            _logger.LogInformation($"Updating {updates.Count} apis in kong portal");
             
             updates.ForEach(x =>
             {
@@ -87,15 +89,17 @@ public class UpdateClusterApis : IUpdateClusterApis
             });
         }
 
-        _logger.LogInformation("Determining apis to be deleted");
+        _logger.LogInformation("Determining if any apis should be deleted");
 
         var deletes = entries.Where(e => pods.All(p => e.Name != p.Name)).ToList();
 
         if (deletes.Any())
         {
-            _logger.LogInformation($"Deleting {deletes.Count} apis, that are no longer deployed");
+            _logger.LogInformation($"Deleting {deletes.Count} apis, from kong that are no longer deployed");
             deletes.ForEach(x => DeleteApi(x, nameSpace));
         }
+
+        _logger.LogInformation("Persisting namespace state in cluster object");
 
         PersistNamespaceState(nameSpace, deletes, updated, entries, newApis);
     }
