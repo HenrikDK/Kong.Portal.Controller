@@ -50,8 +50,9 @@ app.UseSwaggerUI(x =>
     x.RoutePrefix = "";
     x.SwaggerEndpoint("/swagger.json", "Api");
     x.ConfigObject.AdditionalItems["tagsSorter"] = "alpha";
+    x.ConfigObject.AdditionalItems["operationsSorter"] = "alpha";
     x.ConfigObject.DefaultModelsExpandDepth = -1;
-    x.DocExpansion(DocExpansion.None);
+    x.DocExpansion(DocExpansion.List);
 });
 
 app.UseRouting();
