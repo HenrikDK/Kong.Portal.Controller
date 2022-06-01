@@ -15,7 +15,7 @@ public class MergeOpenApiSchema : IMergeOpenApiSchema
         var schema = api.Data.FromBrotliBase64(); 
         var json = JObject.Parse(schema);
 
-        var types = json["components"]["schemas"].ToKeyValuePairs();
+        var types = json["components"]["schemas"]?.ToKeyValuePairs() ?? new List<(string Key, object Value)>();
         foreach (var type in types)
         {
             schema = schema.Replace($"#/components/schemas/{type.Key}", $"#/components/schemas/{api.Name}_{type.Key}");
