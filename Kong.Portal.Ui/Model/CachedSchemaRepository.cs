@@ -31,7 +31,7 @@ public class CachedSchemaRepository : ICachedSchemaRepository
             var kongApiData = all.FirstOrDefault(x => x.Name == "api");
         
             x.SlidingExpiration = TimeSpan.FromMinutes(2);
-            return kongApiData?.Data ?? "";
+            return kongApiData?.Data.FromBrotliBase64() ?? "";
         });
     }
     
