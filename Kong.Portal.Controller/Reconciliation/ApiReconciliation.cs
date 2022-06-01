@@ -61,6 +61,17 @@ public class ApiReconciliation : IApiReconciliation
         var apis = _kongApiRepository.GetAll();
 
         var apisInNamespace = apis.ToLookup(x => x.NameSpace);
+
+        if (_nameSpaces.Value.Any())
+        {
+            _logger.LogInformation($"Monitoring namespaces: {string.Join(",", _nameSpaces.Value)}");
+            var monitored = apisInNamespace.Where(x => _nameSpaces.Value.Contains(x.Key)).ToList();
+            
+            monitored.ForEach(x => ReconcileNamespace(x.Key, x.ToList()));
+            return;
+        }
+        
+        _logger.LogInformation("Monitoring all namespaces");
         
         apisInNamespace.ForEach(x => ReconcileNamespace(x.Key, x.ToList()));
     }
@@ -68,6 +79,8 @@ public class ApiReconciliation : IApiReconciliation
     private void ReconcileNamespace(string nameSpace, List<KongApi> apis)
     {
         if (_nameSpaces.Value.Any() && !_nameSpaces.Value.Contains(nameSpace)) return;
+        
+        _logger.LogInformation($"Found {apis.Count} apis in namespace {nameSpace}");
 
         var config = _kongApiConfigRepository.GetFirstIn(nameSpace);
 
