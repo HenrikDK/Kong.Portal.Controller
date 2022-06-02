@@ -57,7 +57,7 @@ public class MergeClusterApis : IMergeClusterApis
         
         var newApis = apis.Where(x => data.All(e => e.Name != x.Name)).ToList();
 
-        var needsUpdate = data.Where(d => pods.Any(p => d.Name == p.Name && d.Updated < p.LastUpdated)).ToList();
+        var needsUpdate = data.Where(d => pods.Any(p => p.Name.StartsWith(d.Name) && d.Updated < p.LastUpdated)).ToList();
 
         var updates = apis.Where(x => needsUpdate.Any(n => n.Name == x.Name)).ToList();
         
