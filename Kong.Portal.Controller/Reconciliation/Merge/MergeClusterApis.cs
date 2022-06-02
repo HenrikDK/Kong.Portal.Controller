@@ -16,6 +16,7 @@ public class MergeClusterApis : IMergeClusterApis
     private readonly IApiPodRepository _apiPodRepository;
     private readonly IKongRepository _kongRepository;
     private readonly ILogger<MergeClusterApis> _logger;
+    private readonly IConfiguration _configuration;
     private readonly IMergeOpenApiSchemas _mergeOpenApiSchemas;
 
     public MergeClusterApis(IApiSwaggerRepository apiSwaggerRepository,
@@ -23,6 +24,7 @@ public class MergeClusterApis : IMergeClusterApis
         IApiPodRepository apiPodRepository,
         IKongRepository kongRepository,
         ILogger<MergeClusterApis> logger,
+        IConfiguration configuration,
         IMergeOpenApiSchemas mergeOpenApiSchemas)
     {
         _apiSwaggerRepository = apiSwaggerRepository;
@@ -30,6 +32,7 @@ public class MergeClusterApis : IMergeClusterApis
         _apiPodRepository = apiPodRepository;
         _kongRepository = kongRepository;
         _logger = logger;
+        _configuration = configuration;
         _mergeOpenApiSchemas = mergeOpenApiSchemas;
     }
         
@@ -109,9 +112,11 @@ public class MergeClusterApis : IMergeClusterApis
             
             _kongApiDataRepository.Delete(mergeApi);
             _kongApiDataRepository.Insert(mergeApi);
-            
+
+            if (!_configuration.GetValue<bool>("kong-update")) return;
+
             _logger.LogInformation("Notifying kong portal of update.");
-            
+
             _kongRepository.Delete(mergeApi.Name, mergeApi.NameSpace);
             _kongRepository.Update(mergeApi.Name, mergeApi.NameSpace, swagger);
         }
