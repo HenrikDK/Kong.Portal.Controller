@@ -18,6 +18,7 @@ public class MergeClusterApis : IMergeClusterApis
     private readonly ILogger<MergeClusterApis> _logger;
     private readonly IConfiguration _configuration;
     private readonly IMergeOpenApiSchemas _mergeOpenApiSchemas;
+    private readonly Lazy<bool> _updateDisabled;
 
     public MergeClusterApis(IApiSwaggerRepository apiSwaggerRepository,
         IKongApiDataRepository kongApiDataRepository,
@@ -34,6 +35,8 @@ public class MergeClusterApis : IMergeClusterApis
         _logger = logger;
         _configuration = configuration;
         _mergeOpenApiSchemas = mergeOpenApiSchemas;
+
+        _updateDisabled = new Lazy<bool>(() => _configuration.GetValue<string>("kong-update") == "false");
     }
         
     public void MergeNamespace(string nameSpace, IList<KongApi> apis)
@@ -113,7 +116,7 @@ public class MergeClusterApis : IMergeClusterApis
             _kongApiDataRepository.Delete(mergeApi);
             _kongApiDataRepository.Insert(mergeApi);
 
-            if (!_configuration.GetValue<bool>("kong-update")) return;
+            if (_updateDisabled.Value) return;
 
             _logger.LogInformation("Notifying kong portal of update.");
 
