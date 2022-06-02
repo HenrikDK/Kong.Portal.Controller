@@ -27,15 +27,9 @@ public class ApiPodRepository : IApiPodRepository
         var apiPods = new List<ApiPod>();
         foreach (var pod in pods.items)
         {
-            var name = pod.metadata.name.ToString();
-            if (!name.Contains("-api")) continue;
-
-            if (name.Contains("api-"))
-                name = name.Substring(0, name.IndexOf("-api")+4);
-            
             apiPods.Add(new ApiPod
             {
-                Name = name,
+                Name = pod.metadata.nam,
                 NameSpace = (string)((IDictionary<string, object>)pod.metadata)["namespace"],
                 LastUpdated = pod.metadata.creationTimestamp,
             });
@@ -43,7 +37,7 @@ public class ApiPodRepository : IApiPodRepository
 
         var lookup = apiPods.ToLookup(x => new {x.Name, x.NameSpace});
         
-        var result = lookup.Select(x => x.OrderByDescending(x => x.LastUpdated).First()).ToList();
+        var result = lookup.Select(x => x.OrderBy(x => x.LastUpdated).First()).ToList();
 
         return result;
     }
