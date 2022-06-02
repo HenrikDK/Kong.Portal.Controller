@@ -58,7 +58,7 @@ public class KongApiDataRepository : IKongApiDataRepository
                 Name = api.metadata.name,
                 NameSpace = (string)((IDictionary<string, object>)api.metadata)["namespace"],
                 Data = api.spec.json,
-                Updated = api.spec.updated,
+                Updated = api.metadata.creationTimestamp,
             });
         }
 
