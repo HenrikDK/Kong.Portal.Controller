@@ -17,7 +17,8 @@ public class MergeOpenApiSchemas : IMergeOpenApiSchemas
   ""info"": {""title"": """", ""version"": ""v1""},
   ""paths"": {},
   ""components"": {""schemas"": {}},
-  ""servers"": {""url"": """"}
+  ""servers"": {""url"": """"},
+  ""security"": []
 }";
     private readonly IKongApiConfigRepository _kongApiConfigRepository;
     private readonly IConfiguration _configuration;
@@ -103,9 +104,11 @@ public class MergeOpenApiSchemas : IMergeOpenApiSchemas
         if (configuration.SecurityScheme == "BasicAuth")
         {
             mainSchema["components"]["securitySchemes"] = new JObject();
-            mainSchema["components"]["securitySchemes"]["basicAuth"] = new JObject();
-            mainSchema["components"]["securitySchemes"]["basicAuth"]["type"] = "http";
-            mainSchema["components"]["securitySchemes"]["basicAuth"]["scheme"] = "basic";
+            mainSchema["components"]["securitySchemes"]["BasicAuth"] = new JObject();
+            mainSchema["components"]["securitySchemes"]["BasicAuth"]["type"] = "http";
+            mainSchema["components"]["securitySchemes"]["BasicAuth"]["scheme"] = "basic";
+            
+            AddSecurityScheme(mainSchema, "BasicAuth");
         }
 
         if (configuration.SecurityScheme == "ApiKey")
@@ -115,6 +118,8 @@ public class MergeOpenApiSchemas : IMergeOpenApiSchemas
             mainSchema["components"]["securitySchemes"]["ApiKeyAuth"]["type"] = "apiKey";
             mainSchema["components"]["securitySchemes"]["ApiKeyAuth"]["in"] = "header";
             mainSchema["components"]["securitySchemes"]["ApiKeyAuth"]["name"] = configuration.SecurityKeyName;
+            
+            AddSecurityScheme(mainSchema, "ApiKeyAuth");
         }
 
         if (configuration.SecurityScheme == "JWTBearer")
@@ -125,6 +130,17 @@ public class MergeOpenApiSchemas : IMergeOpenApiSchemas
             mainSchema["components"]["securitySchemes"]["Bearer"]["description"] = "Please insert JWT into field";
             mainSchema["components"]["securitySchemes"]["Bearer"]["scheme"] = "bearer";
             mainSchema["components"]["securitySchemes"]["Bearer"]["bearerFormat"] = "JWT";
+
+            AddSecurityScheme(mainSchema, "Bearer");
         }
+    }
+
+    private void AddSecurityScheme(JObject mainSchema, string scheme)
+    {
+        var auth = new JObject();
+        auth[scheme] = new JArray();
+        var array = new JArray();
+        array.Add(auth);
+        mainSchema["security"] = array;
     }
 }
